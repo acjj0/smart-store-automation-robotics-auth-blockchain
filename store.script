@@ -1,0 +1,182 @@
+
+# Sample Authentication Script
+# This script only provisions the Authentication service
+# You should use the script from the Controller Service assignment to test interaction between the Authentication Service, Store Model Service, and Controller Service.
+
+#Login to the default bootstrap root account which has full access. Use it to setup basic authentication entitlements and users.
+login root password default
+
+
+# Define Authentication Service Permissions
+define_permission create_entitlement permission_name "Create Entitlement" permission_description "Create Entitlements in Authentication Service"
+define_permission create_user permission_name "Create User" permission_description "Create Users in Authentication Service"
+define_permission create_resource permission_name "Create Resource" permission_description "Create Resource in Authentication Service"
+define_permission read_entitlement permission_name "Read Entitlement" permission_description "Read Entitlements in Authentication Service"
+define_permission read_user permission_name "Read User" permission_description "Read Users in Authentication Service"
+define_permission read_resource permission_name "Read Resource" permission_description "Read Resource in Authentication Service"
+define_permission update_entitlement permission_name "Update Entitlement" permission_description "Update Entitlements in Authentication Service"
+define_permission update_user permission_name "Update User" permission_description "Update Users in Authentication Service"
+define_permission update_resource permission_name "Update Resource" permission_description "Update Resource in Authentication Service"
+
+define_role auth_admin_role role_name "Authorization Admin Role" role_description "Has all Authorization permissions"
+define_role auth_readonly_role role_name "Authorization Read Only Role" role_description "Has Authorization read only permissions"
+
+add_permission_to_role auth_admin_role create_entitlement
+add_permission_to_role auth_admin_role create_user
+add_permission_to_role auth_admin_role create_resource
+add_permission_to_role auth_admin_role read_entitlement
+add_permission_to_role auth_admin_role read_user
+add_permission_to_role auth_admin_role read_resource
+add_permission_to_role auth_admin_role update_entitlement
+add_permission_to_role auth_admin_role update_user
+add_permission_to_role auth_admin_role update_resource
+
+add_permission_to_role auth_readonly_role read_entitlement
+add_permission_to_role auth_readonly_role read_user
+add_permission_to_role auth_readonly_role read_resource
+
+create_user debra name "Debra Smart"
+add_user_credential debra password debra123
+add_user_credential debra faceprint faceprint-debra123
+add_user_credential debra voiceprint voiceprint-debra123
+add_role_to_user debra auth_admin_role
+
+# Create an inventory for all of the objects in the Authentication service
+get_inventory
+
+# logout from root user
+logout
+
+# login as auth_admin_role to provision store users and entitlements.
+login faceprint faceprint-debra123
+
+
+#Define Store Permissions
+#Define Permission control_robot
+define_permission control_robot permission_name "Control Robot" permission_description "Full Control of Robots"
+#Define Permission control_speaker
+define_permission control_speaker permission_name "Control Speaker" permission_description "Full Control of Speakers"
+#Define Permission control_turnstile
+define_permission control_turnstile permission_name "Control turnstile" permission_description "Full Control of Turnstiles"
+#Define Permission enter_store
+define_permission enter_store permission_name "Enter Store" permission_description "Permission to Enter Store"
+#Define Permission checkout
+define_permission checkout permission_name "Checkout" permission_description "Permission to Checkout"
+#Define Permission get_user_authtoken
+define_permission get_user_authtoken permission_name "Get User's AuthToken" permission_description "Permission to get AuthToken"
+#Define Permission provision_store
+define_permission provision_store permission_name "Provision Store" permission_description "Permission to provision stores, ailes, shelves, products, devices, customers"
+
+#Define Store Roles
+#Define role adult_consumer_role
+define_role adult_consumer_role role_name "Adult Consumer Role" role_description "Has all permissions of an adult consumer"
+#Define role child_consumer_role
+define_role child_consumer_role role_name "Child Consumer Role" role_description "Has all permissions of an child consumer"
+#Define role guest_consumer_role
+define_role guest_consumer_role role_name "Guest Consumer Role" role_description "Has all permissions of an guest"
+#Define role controller_service_role
+define_role controller_service_role role_name "Store Controller Role" role_description "Has all permissions of controller service"
+#Define role admin_role
+define_role admin_role role_name "Admin Role" role_description "Has all permissions"
+
+# add permission to role
+# for admin user
+# add permission user_admin to admin_role
+add_permission_to_role admin_role user_admin
+# add permission control_robot to admin_role
+add_permission_to_role admin_role control_robot
+# add permission control_speaker to admin_role
+add_permission_to_role admin_role control_speaker
+# add permission control_turnstile to admin_role
+add_permission_to_role admin_role control_turnstile
+# add permission control_microphone to admin_role
+add_permission_to_role admin_role control_microphone
+# add permission control_camera to admin_role
+add_permission_to_role admin_role control_camera
+# add permission provision_store to admin_role
+add_permission_to_role admin_role provision_store
+# for adult user
+# add permission control_robot to adult_consumer_role
+add_permission_to_role adult_consumer_role control_robot
+# add permission enter_store to adult_consumer_role
+add_permission_to_role adult_consumer_role enter_store
+# add permission checkout to adult_consumer_role
+add_permission_to_role adult_consumer_role checkout
+# for child consumer
+# add permission enter_store to child_consumer_role
+add_permission_to_role child_consumer_role enter_store
+
+
+# add permission checkout to child_consumer_role
+add_permission_to_role child_consumer_role checkout
+# for guest
+# add permission enter_store to guest
+add_permission_to_role guest_consumer_role enter_store
+# for Store Controller role
+# add permission control_robot to controller_service_role
+add_permission_to_role controller_service_role control_robot
+# add permission control_speaker to controller_service_role
+add_permission_to_role controller_service_role control_speaker
+# add permission control_turnstile to controller_service_role
+add_permission_to_role controller_service_role control_turnstile
+# add permission get_user_authtoken to controller_service_role
+add_permission_to_role controller_service_role get_user_authtoken
+# add permission control_microphone to controller_service_role
+add_permission_to_role controller_service_role control_microphone
+# add permission control_camera to admin_role
+add_permission_to_role controller_service_role control_camera
+
+# Create Store Users
+# create_user <user_id> name <user_name>
+# Creates new user Sam Davis
+create_user sam name "Sam Davis"
+# add_user_credential
+add_user_credential sam password sam123
+add_user_credential sam faceprint faceprint-sam123
+add_user_credential sam voiceprint voiceprint-sam123
+# create new user Jimmy Jones
+create_user jimmy name "Jimmy Jones"
+# add_user_credential
+add_user_credential jimmy password jimmy123
+add_user_credential jimmy faceprint faceprint-jimmy123
+add_user_credential jimmy voiceprint voiceprint-jimmy123
+# create new user Store Controller Service
+create_user scs name "Store Controller Service"
+# add_user_credential
+add_user_credential scs password scs123
+
+# create resource role
+# create_resource_role <resource_role_name> <role> <resource>
+# create resourceRole store1_child_consumer
+create_resource_role store1_child_consumer child_consumer_role store123
+# create resourceRole store1_adult_consumer
+create_resource_role store1_adult_consumer adult_consumer_role store123
+# add resource role to user
+# add_resource_role_to_user <user_id>, <resource_role>
+# add resourceRole store1_adult_consumer to user sam
+add_resource_role_to_user sam store1_adult_consumer
+# add resourceRole store1_child_consumer to user jimmy
+add_resource_role_to_user jimmy store1_child_consumer
+# add role to user
+# add_role_to_user <user_id> <role>
+# add role adult_consumer_role to user sam
+add_role_to_user sam adult_consumer_role
+# add role child_consumer_role to user jimmy
+add_role_to_user jimmy child_consumer_role
+# add role controller_service_role to user scs (Store Controller Service)
+add_role_to_user scs controller_service_role
+
+# check access, retrieves auth token for credential and calls check access method
+#should succeed for sam
+check_access user sam password sam123 resource store1 permission control_robot
+check_access voiceprint voiceprint-sam123 resource store1 permission control_robot
+#should fail for jimmy
+check_access user jimmy password jimmy123 resource store1 permission control_robot
+check_access faceprint faceprint-jimmy123 resource store1 permission control_robot
+
+
+# Create an inventory for all of the objects in the Authentication service
+get_inventory
+
+# Logout
+logout
